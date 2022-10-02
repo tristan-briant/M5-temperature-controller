@@ -16,9 +16,12 @@ class PID
   #define P_ON_M 0
   #define P_ON_E 1
 
+  //PID(double *Input, double *Output, double *Setpoint,
+  //       double Kp, double Ki, double Kd, int POn, int ControllerDirection)
+
   //commonly used functions **************************************************************************
-    PID(double*, double*, double*,        // * constructor.  links the PID to the Input, Output, and 
-        double, double, double, int, int);//   Setpoint.  Initial tuning parameters are also set here.
+    PID(double *Input, double *Output, double *Setpoint,        // * constructor.  links the PID to the Input, Output, and 
+        double Kp, double Ki, double Kd, int POn, int ControllerDirection);//   Setpoint.  Initial tuning parameters are also set here.
                                           //   (overload for specifying proportional mode)
 
     PID(double*, double*, double*,        // * constructor.  links the PID to the Input, Output, and 
