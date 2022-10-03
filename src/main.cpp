@@ -1,18 +1,10 @@
-#define __TC_VERSION__ "V0.1"
-
-
-#include <Arduino.h>
 #include <M5Stack.h>
 #include "PID_v1.h"
 
-double load_value(const char *name, const char *key);
-void save_value(const char *name, const char *key, float data);
-void save_tuning(PID pid1, PID pid2);
-void load_tuning(PID *pid1, PID *pid2);
 
 
 double alpha = 0.005;
-double temp1, temp2, tset1 = 19, tset2;
+double temp1, temp2, tset1, tset2;
 double Gp1, Gp2;
 double Gd1, Gd2;
 double Gi1, Gi2;
@@ -25,51 +17,15 @@ const double T_factor = 108.8 / 4096.0;
 PID pid1(&temp1, &output1, &tset1, 0, 0, 0, DIRECT);
 PID pid2(&temp2, &output2, &tset2, 0, 0, 0, DIRECT);
 
-void loopComunication(void *param)
-{
-  while (true)
-  {
-    if (Serial.available())
-    {
-      const int16_t BUFFER_SIZE = 100;
-      String str(BUFFER_SIZE);
-      str = Serial.readStringUntil('\n');
-      str.toUpperCase();
-      Serial.printf("Received: %s\n", str);
 
-      if (str == "TEMP1?")
-        Serial.printf("%.2f\n", temp1);
-      else if (str == "TEMP2?")
-        Serial.printf("%.2f\n", temp2);
-      else if (str == "*IDN?")
-        Serial.printf("Temperature Controller %s\n", __TC_VERSION__);
-      else if (str == "PID1:GP?")
-        Serial.printf("%.5f\n", pid1.GetKp());
-      else if (str == "PID1:GD?")
-        Serial.printf("%.5f\n", pid1.GetKd());
-      else if (str == "PID1:GI?")
-        Serial.printf("%.5f\n", pid1.GetKi());
-      else if (str == "PID2:GP?")
-        Serial.printf("%.5f\n", pid2.GetKp());
-      else if (str == "PID2:GD?")
-        Serial.printf("%.5f\n", pid2.GetKd());
-      else if (str == "PID2:GI?")
-        Serial.printf("%.5f\n", pid2.GetKi());
-      else if (str == "TSET1?")
-        Serial.printf("%.2f\n", temp1);
-      else if (str == "TSET2?")
-        Serial.printf("%.2f\n", temp2);
+///////////////// Function declaration ///////////////
+void loopComunication(void *param);
+bool load_value(const char *name, const char *key, double *target);
+void save_value(const char *name, const char *key, double data);
+void save_tuning(PID pid1, PID pid2);
+void load_tuning(PID *pid1, PID *pid2);
+///////////////// \Function declaration ///////////////
 
-      else if (str.startsWith("PID1:GP"))
-      {
-        float x = str.substring(7).toFloat();
-        pid1.SetTunings(x, pid1.GetKi(), pid1.GetKp());
-        save_tuning(pid1, pid2);
-      }
-    }
-    delay(10);
-  }
-}
 
 void loopGUI(void *param)
 {
@@ -99,7 +55,7 @@ void loopMeasure(void *param)
     temp1 = alpha * x + (1 - alpha) * temp1;
 
     pid1.Compute();
-    // delay(1);
+    //delay(1);
   }
 }
 
@@ -117,6 +73,9 @@ void setup()
 
   // Gd1 = load_value("PID1", "GP");
   load_tuning(&pid1, &pid2);
+  load_value("PID1", "TSET",&tset1);
+  load_value("PID2", "TSET",&tset2);
+
 
   Serial.println(pid1.GetKp());
   Serial.println(pid1.GetKi());
