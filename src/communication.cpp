@@ -23,7 +23,6 @@ void loopComunication(void *param)
                 String str(BUFFER_SIZE);
                 str = Serial.readStringUntil('\n');
                 str.toUpperCase();
-                // Serial.printf("Received: %s\n", str);
 
                 if (str == "TEMP1?")
                     Serial.printf("%.2f\n", temp1);
