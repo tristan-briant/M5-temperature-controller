@@ -194,6 +194,11 @@ void PID::SetMode(int Mode)
    { /*we just went from manual to auto*/
       PID::Initialize();
    }
+   if (!newAuto && inAuto)
+   { /*we just went from auto to manual*/
+      *myOutput = 0;
+      outputSum = 0;
+   }
    inAuto = newAuto;
 }
 
@@ -203,7 +208,8 @@ void PID::SetMode(int Mode)
  ******************************************************************************/
 void PID::Initialize()
 {
-   outputSum = *myOutput;
+   // outputSum = *myOutput;
+   outputSum = 0;
    lastInput = *myInput;
    if (outputSum > outMax)
       outputSum = outMax;

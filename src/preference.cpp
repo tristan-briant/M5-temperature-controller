@@ -38,9 +38,6 @@ void save_tuning(PID pid1, PID pid2)
     {
         double data[] = {pid1.GetKp(), pid1.GetKi(), pid1.GetKd(), (double)pid1.GetDirection()};
         preferencesdata.putBytes("PID1", (uint8_t *)data, 4 * sizeof(double));
-
-        Serial.println(data[0]);
-
         double data2[] = {pid2.GetKp(), pid2.GetKi(), pid2.GetKd(), (double)pid2.GetDirection()};
         preferencesdata.putBytes("PID2", (uint8_t *)data2, 4 * sizeof(double));
         preferencesdata.end();

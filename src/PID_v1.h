@@ -14,6 +14,9 @@ public:
 #define P_ON_M 0
 #define P_ON_E 1
 
+#define BIPOLAR 1
+#define UNIPOLAR 0
+
   // PID(double *Input, double *Output, double *Setpoint,
   //        double Kp, double Ki, double Kd, int POn, int ControllerDirection)
 
@@ -55,6 +58,9 @@ public:
   double GetKi(); //  they were created mainly for the pid front-end,
   double GetKd(); // where it's important to know what is actually
   double GetSet();
+  double GetOutMax() { return outMax; }
+  double GetOutMin() { return outMin; }
+
   int GetMode();      //  inside the PID.
   int GetDirection(); //
 
